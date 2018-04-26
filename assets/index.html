@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление таблиц воздуха</title>
+</head>
+<body>
+<div id="app">
+    <dev v-if="loading">Грузится</dev>
+{{test}}
+    <form>
+        <input type="date" v-model="date_one_start" required>
+        <input type="date" v-model="date_one_finish" required>
+        <input type="submit" v-on:click.prevent="sendData" v-bind:disabled="!checkData">
+    </form>
+
+</div>
+
+
+<script type="text/javascript" src="/js/lib/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            date_one_start: "",
+            date_one_finish: "",
+            test: "",
+            loading: false
+        },
+        computed: {
+            checkData: function () {
+                if (this.date_one_start == '') {
+                    return false
+                }
+                if (this.date_one_finish == '') {
+                    //console.log("in if");
+                    return true
+                }
+                var finish = this.date_one_finish.replace('/-/g', '');
+                var start = this.date_one_start.replace('/-/g', '');
+                return start <= finish
+
+            }
+        },
+        methods: {
+            sendData: function (event) {
+                this.loading = true;
+                axios.post('/update', {
+                    date_one_start: this.date_one_start,
+                    date_one_finish: this.date_one_finish
+                })
+                        .then(response => {
+                            this.test = response.data
+                        })
+                        .catch(function (error) {
+                            this.test = 'Ошибка! Не могу связаться с API: ' + error
+                        })
+                        .finally(() => this.loading = false)
+    
+            },
+        }
+    })
+</script>
+</body>
+</html>
