@@ -68,7 +68,7 @@
             }
         },
         methods: {
-            sendPB: function (event) {
+            sendPB: function () {
                 this.loading = true;
                 axios.post('/update', {
                     who: "pb",
@@ -76,6 +76,11 @@
                     date_one_finish: this.date_one_finish
                 })
                         .then(response => {
+                            if (response.data.success) {
+                                alert("Обновленно")
+                            } else {
+                                alert("Не обновленно")
+                            }
                         })
                         .catch(function (error) {
                             alert('Ошибка! Не могу связаться с API: ' + error)
@@ -109,7 +114,7 @@
             }
         },
         methods: {
-            sendAll: function (event) {
+            sendAll: function () {
                 this.loading = true;
                 axios.post('/update', {
                     who: "all",
@@ -117,6 +122,11 @@
                     date_one_finish: this.date_one_finish
                 })
                         .then(response => {
+                            if (response.data.success) {
+                                alert("Обновленно")
+                            } else {
+                                alert("Не обновленно")
+                            }
                         })
                         .catch(function (error) {
                             alert('Ошибка! Не могу связаться с API: ' + error)

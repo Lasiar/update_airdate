@@ -1,0 +1,39 @@
+body {
+    background: whitesmoke;
+}
+
+.input-date-first {
+    background: #dcdcdc;
+    border-radius: 3px 0 0 3px;
+    height: 30px;
+    border: 0;
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+}
+
+.input-date-second {
+    background: #dcdcdc;
+    height: 30px;
+    border: 0;
+    font-family: "Times New Roman", serif;
+    font-size: 15px;
+}
+
+.input-submit {
+    border-radius: 0 3px 3px 0;
+    border: 0;
+    height: 30px;
+}
+
+.input-disable {
+    background: rgba(255,0,0,0.33);
+}
+
+
+#one {
+    width: 400px;
+}
+
+#two {
+    width: 400px;
+}
