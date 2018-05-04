@@ -72,8 +72,8 @@
                 this.loading = true;
                 axios.post('/update', {
                     who: "pb",
-                    date_one_start: this.date_one_start,
-                    date_one_finish: this.date_one_finish
+                    date_start: this.date_one_start,
+                    date_finish: this.date_one_finish
                 })
                         .then(response => {
                             if (response.data.success) {
@@ -118,8 +118,8 @@
                 this.loading = true;
                 axios.post('/update', {
                     who: "all",
-                    date_one_start: this.date_one_start,
-                    date_one_finish: this.date_one_finish
+                    date_start: this.date_one_start,
+                    date_finish: this.date_one_finish
                 })
                         .then(response => {
                             if (response.data.success) {

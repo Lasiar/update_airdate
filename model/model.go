@@ -24,7 +24,7 @@ func (d *database) connect() error {
 	return nil
 }
 
-func UpdatePb(dateStart time.Time, dateFinish time.Time) error {
+func UpdatePb(dateStart, dateFinish time.Time) error {
 	db := new(database)
 
 	err := db.connect()
@@ -53,7 +53,7 @@ func UpdatePb(dateStart time.Time, dateFinish time.Time) error {
 }
 
 
-func UpdateAll(dateStart time.Time, dateFinish time.Time) error {
+func UpdateAll(dateStart, dateFinish time.Time) error {
 	db := new(database)
 
 	err := db.connect()

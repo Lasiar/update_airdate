@@ -12,19 +12,40 @@ import (
 	"air/model"
 )
 
-type updateRequest struct {
-	Who           string `json:"who"`
-	DateOneStart  string `json:"date_one_start"`
-	DateOneFinish string `json:"date_one_finish"`
+type request struct {
+	Who        string `json:"who"`
+	DateStart  string `json:"date_one_start"`
+	DateFinish string `json:"date_one_finish"`
+}
+
+func (u request) Update(start, finish time.Time) error {
+	if u.Who == "pb" {
+		return model.UpdatePb(start, finish)
+	} else {
+		return model.UpdateAll(start, finish)
+	}
+	return nil
 }
 
 type responseRequest struct {
 	Success bool `json:"success"`
 }
 
+type date struct {
+	time.Time
+}
+
+func (d *date) Parse(str string) bool {
+	tmp, err := time.Parse("2006-01-02", str)
+	if err != nil {
+		return false
+	}
+	d.Time = tmp
+	return true
+}
+
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		fmt.Println("запрет")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -34,59 +55,41 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	var upReq updateRequest
+	var req request
 
-	err = json.Unmarshal([]byte(buf), &upReq)
+	err = json.Unmarshal([]byte(buf), &req)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println(upReq.DateOneStart)
+	var tmStart, tmFinish date
 
-	tm_start, err := time.Parse("2006-01-02", upReq.DateOneStart)
-	if err != nil {
+	if !tmStart.Parse(req.DateStart) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	var tm_finish time.Time
-
-	if upReq.DateOneFinish == "" {
-		tm_finish = tm_start
+	if req.DateFinish == "" {
+		tmFinish = tmStart
 	} else {
-		if tm_finish, err = time.Parse("2006-01-02", upReq.DateOneFinish); err != nil {
+		if !tmFinish.Parse(req.DateFinish) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
 
-	if upReq.Who != "pb" && upReq.Who != "all" {
+	if req.Who != "pb" && req.Who != "all" {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-
-
-
-	if upReq.Who == "pb" {
-		en := json.NewEncoder(w)
-		if err := model.UpdatePb(tm_start, tm_finish); err != nil {
-			fmt.Println(err)
-			en.Encode(responseRequest{Success: false})
-		} else {
-			en.Encode(responseRequest{Success: true})
-		}
-	}
-
-	if upReq.Who == "all" {
-		en := json.NewEncoder(w)
-		if err := model.UpdateAll(tm_start, tm_finish); err != nil {
-			fmt.Println(err)
-			en.Encode(responseRequest{Success: false})
-		} else {
-			en.Encode(responseRequest{Success: true})
-		}
+	en := json.NewEncoder(w)
+	if err := req.Update(tmStart.Time, tmFinish.Time); err != nil {
+		fmt.Println(err)
+		en.Encode(responseRequest{Success: false})
+	} else {
+		en.Encode(responseRequest{Success: true})
 	}
 }
 
