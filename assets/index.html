@@ -3,30 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Обновление таблиц воздуха</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
 </head>
 <body>
-<div id="app">
+
+
+<div id="one">
     <dev v-if="loading">Грузится</dev>
-{{test}}
+
     <form>
-        <input type="date" v-model="date_one_start" required>
-        <input type="date" v-model="date_one_finish" required>
-        <input type="submit" v-on:click.prevent="sendData" v-bind:disabled="!checkData">
+        <p>
+            Бензонал <br>
+        {{answer}}
+            <input type="date" class="input-date-first" v-model="date_one_start" required title="начало">
+            <input type="date" class="input-date-second" v-model="date_one_finish" required placeholder="конец"
+                   title="конец">
+            <input type="submit" class="input-submit" v-on:click.prevent="sendPB" v-bind:disabled="!checkData">
+        </p>
+    </form>
+</div>
+
+<div id="two">
+    <dev v-if="loading">Грузится</dev>
+
+    <form>
+        <p>
+            Все <br>
+        {{answer}}
+            <input type="date" class="input-date-first" v-model="date_one_start" required title="начало">
+            <input type="date" class="input-date-second" v-model="date_one_finish" required placeholder="конец"
+                   title="конец">
+            <input type="submit" class="input-submit" v-on:click.prevent="sendAll" v-bind:disabled="!checkData">
+        </p>
     </form>
 
 </div>
-
 
 <script type="text/javascript" src="/js/lib/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
 <script>
-    var vm = new Vue({
-        el: "#app",
+
+    new Vue({
+        el: "#one",
         data: {
             date_one_start: "",
             date_one_finish: "",
-            test: "",
+            answer: "",
             loading: false
         },
         computed: {
@@ -45,20 +68,61 @@
             }
         },
         methods: {
-            sendData: function (event) {
+            sendPB: function (event) {
                 this.loading = true;
                 axios.post('/update', {
+                    who: "pb",
                     date_one_start: this.date_one_start,
                     date_one_finish: this.date_one_finish
                 })
                         .then(response => {
-                            this.test = response.data
                         })
                         .catch(function (error) {
-                            this.test = 'Ошибка! Не могу связаться с API: ' + error
+                            alert('Ошибка! Не могу связаться с API: ' + error)
                         })
                         .finally(() => this.loading = false)
-    
+
+            },
+        }
+    });
+    new Vue({
+        el: "#two",
+        data: {
+            date_one_start: "",
+            date_one_finish: "",
+            answer: "",
+            loading: false
+        },
+        computed: {
+            checkData: function () {
+                if (this.date_one_start == '') {
+                    return false
+                }
+                if (this.date_one_finish == '') {
+                    //console.log("in if");
+                    return true
+                }
+                var finish = this.date_one_finish.replace('/-/g', '');
+                var start = this.date_one_start.replace('/-/g', '');
+                return start <= finish
+
+            }
+        },
+        methods: {
+            sendAll: function (event) {
+                this.loading = true;
+                axios.post('/update', {
+                    who: "all",
+                    date_one_start: this.date_one_start,
+                    date_one_finish: this.date_one_finish
+                })
+                        .then(response => {
+                        })
+                        .catch(function (error) {
+                            alert('Ошибка! Не могу связаться с API: ' + error)
+                        })
+                        .finally(() => this.loading = false)
+
             },
         }
     })
