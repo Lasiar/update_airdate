@@ -24,7 +24,7 @@ func (d *database) connect() error {
 	return nil
 }
 
-func UpdatePb(dateStart, dateFinish time.Time) error {
+func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	db := new(database)
 
 	err := db.connect()
@@ -42,36 +42,7 @@ func UpdatePb(dateStart, dateFinish time.Time) error {
 	}
 	defer stmt.Close()
 
-	for i := 16; i < 18; i++ {
-		_, err = stmt.Exec(dateStart,dateFinish ,i)
-		if err != nil {
-			log.Println("[ERROR] tx.stmt.Exec: ", err)
-			return fmt.Errorf("Что-то пошло не так")
-		}
-	}
-	return nil
-}
-
-
-func UpdateAll(dateStart, dateFinish time.Time) error {
-	db := new(database)
-
-	err := db.connect()
-	defer db.Close()
-
-	if err != nil {
-		log.Println(err)
-		return fmt.Errorf("Что-то пошло не так")
-	}
-
-	stmt, err := db.Prepare(update)
-	if err != nil {
-		log.Println("[ERROR] tx.stmt.Exec: ", err)
-		return fmt.Errorf("Что-то пошло не так", err)
-	}
-	defer stmt.Close()
-
-	for i := 1; i < 16; i++ {
+	for i := begin; i < end; i++ {
 		_, err = stmt.Exec(dateStart,dateFinish ,i)
 		if err != nil {
 			log.Println("[ERROR] tx.stmt.Exec: ", err)

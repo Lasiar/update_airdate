@@ -18,11 +18,18 @@ type request struct {
 	DateFinish string `json:"date_one_finish"`
 }
 
+const (
+	startRow = 1
+	midleRow = 16
+	endRow = 18
+)
+
+
 func (u request) Update(start, finish time.Time) error {
 	if u.Who == "pb" {
-		return model.UpdatePb(start, finish)
+		return model.Update(start, finish, midleRow, endRow)
 	} else {
-		return model.UpdateAll(start, finish)
+		return model.Update(start, finish, startRow, midleRow)
 	}
 	return nil
 }
@@ -82,6 +89,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	if req.Who != "pb" && req.Who != "all" {
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	en := json.NewEncoder(w)
