@@ -14,16 +14,15 @@ import (
 
 type request struct {
 	Who        string `json:"who"`
-	DateStart  string `json:"date_one_start"`
-	DateFinish string `json:"date_one_finish"`
+	DateStart  string `json:"date_start"`
+	DateFinish string `json:"date_finish"`
 }
 
 const (
 	startRow = 1
 	midleRow = 16
-	endRow = 18
+	endRow   = 18
 )
-
 
 func (u request) Update(start, finish time.Time) error {
 	if u.Who == "pb" {
@@ -45,6 +44,7 @@ type date struct {
 func (d *date) Parse(str string) bool {
 	tmp, err := time.Parse("2006-01-02", str)
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 	d.Time = tmp
@@ -52,12 +52,14 @@ func (d *date) Parse(str string) bool {
 }
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodPost{
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -85,9 +87,16 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		if tmStart.Time != tmFinish.Time {
+			if tmStart.After(tmFinish.Time) {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
 	}
 
 	if req.Who != "pb" && req.Who != "all" {
+		fmt.Println("i am here")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -101,7 +110,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func HandleFront(w http.ResponseWriter, r *http.Request) {
+func HandleFront(w http.ResponseWriter, _ *http.Request) {
 	f, err := os.Open("assets/index.html")
 	if err != nil {
 		log.Println(err)
