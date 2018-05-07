@@ -1,15 +1,15 @@
 package web
 
 import (
-	"net/http"
-	"io/ioutil"
+	"air/model"
 	"encoding/json"
 	"fmt"
-	"os"
-	"log"
 	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 	"time"
-	"air/model"
 )
 
 type request struct {
@@ -52,14 +52,13 @@ func (d *date) Parse(str string) bool {
 }
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost{
+	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -75,8 +74,6 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	var tmStart, tmFinish date
 
-
-
 	if !tmStart.Parse(req.DateStart) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -85,7 +82,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if req.DateFinish == "" {
 		tmFinish = tmStart
 	} else {
-		if !tmFinish.Parse(req.DateFinish)   {
+		if !tmFinish.Parse(req.DateFinish) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -98,7 +95,6 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Who != "pb" && req.Who != "all" {
-		fmt.Println("i am here")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

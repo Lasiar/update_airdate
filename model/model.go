@@ -1,11 +1,11 @@
 package model
 
 import (
-	"database/sql"
-	_ "github.com/denisenkom/go-mssqldb"
-	"fmt"
-	"time"
 	"air/sys"
+	"database/sql"
+	"fmt"
+	_ "github.com/denisenkom/go-mssqldb"
+	"time"
 )
 
 type database struct {
@@ -40,11 +40,10 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	defer stmt.Close()
 
 	for i := begin; i < end; i++ {
-		_, err = stmt.Exec(dateStart,dateFinish ,i)
+		_, err = stmt.Exec(dateStart, dateFinish, i)
 		if err != nil {
 			return fmt.Errorf("Что-то пошло не так")
 		}
 	}
 	return nil
 }
-
