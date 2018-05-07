@@ -75,6 +75,8 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	var tmStart, tmFinish date
 
+
+
 	if !tmStart.Parse(req.DateStart) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -83,7 +85,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if req.DateFinish == "" {
 		tmFinish = tmStart
 	} else {
-		if !tmFinish.Parse(req.DateFinish) {
+		if !tmFinish.Parse(req.DateFinish)   {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
