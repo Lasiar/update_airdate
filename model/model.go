@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	_ "github.com/denisenkom/go-mssqldb"
-	"log"
 	"fmt"
 	"time"
 	"air/sys"
@@ -31,13 +30,11 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	defer db.Close()
 
 	if err != nil {
-		log.Println(err)
 		return fmt.Errorf("Что-то пошло не так")
 	}
 
 	stmt, err := db.Prepare(update)
 	if err != nil {
-		log.Println("[ERROR] tx.stmt.Exec: ", err)
 		return fmt.Errorf("Что-то пошло не так", err)
 	}
 	defer stmt.Close()
@@ -45,7 +42,6 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	for i := begin; i < end; i++ {
 		_, err = stmt.Exec(dateStart,dateFinish ,i)
 		if err != nil {
-			log.Println("[ERROR] tx.stmt.Exec: ", err)
 			return fmt.Errorf("Что-то пошло не так")
 		}
 	}
