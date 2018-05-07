@@ -12,5 +12,5 @@ func main() {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("assets/js/"))))
 	http.HandleFunc("/update", web.HandleUpdate)
 	http.HandleFunc("/", web.HandleFront)
-	sys.GetConfig().Log.Fatal(http.ListenAndServe(":8080", nil))
+	sys.GetConfig().ErrWeb.Fatal(http.ListenAndServe(":8080", nil))
 }
