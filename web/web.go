@@ -1,7 +1,7 @@
 package web
 
 import (
-	"air/model"
+	"kre_air_update/model"
 	"encoding/json"
 	"fmt"
 	"io"

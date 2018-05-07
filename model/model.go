@@ -1,7 +1,7 @@
 package model
 
 import (
-	"air/sys"
+	"kre_air_update/sys"
 	"database/sql"
 	"fmt"
 	_ "github.com/denisenkom/go-mssqldb"

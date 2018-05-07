@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"air/web"
+	"kre_air_update/web"
 	"log"
 )
 
