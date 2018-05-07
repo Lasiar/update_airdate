@@ -1,10 +1,10 @@
 package model
 
 import (
-	"kre_air_update/sys"
 	"database/sql"
 	"fmt"
 	_ "github.com/denisenkom/go-mssqldb"
+	"kre_air_update/sys"
 	"time"
 )
 
@@ -25,24 +25,23 @@ func (d *database) connect() error {
 
 func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	db := new(database)
-
 	err := db.connect()
 	defer db.Close()
 
 	if err != nil {
-		return fmt.Errorf("Что-то пошло не так")
+		return fmt.Errorf("[ERROR] db.connect: ", err)
 	}
 
 	stmt, err := db.Prepare(update)
 	if err != nil {
-		return fmt.Errorf("Что-то пошло не так", err)
+		return fmt.Errorf("[ERROR] db.Prepare: ", err)
 	}
 	defer stmt.Close()
 
 	for i := begin; i < end; i++ {
 		_, err = stmt.Exec(dateStart, dateFinish, i)
 		if err != nil {
-			return fmt.Errorf("Что-то пошло не так")
+			return fmt.Errorf("[ERROR] db.Exec: ", err)
 		}
 	}
 	return nil

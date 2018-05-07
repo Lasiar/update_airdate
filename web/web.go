@@ -1,14 +1,11 @@
 package web
 
 import (
-	"kre_air_update/model"
 	"encoding/json"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"log"
+	"kre_air_update/model"
+	"kre_air_update/sys"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -57,21 +54,25 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	buf, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
 	var req request
 
-	err = json.Unmarshal([]byte(buf), &req)
+	dc := json.NewDecoder(r.Body)
+	err := dc.Decode(&req)
 	if err != nil {
-		fmt.Println(err)
+		sys.GetConfig().Log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
+	if len(req.DateFinish)+len(req.DateStart) < 2 {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if req.Who != "pb" && req.Who != "all" {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	var tmStart, tmFinish date
 
 	if !tmStart.Parse(req.DateStart) {
@@ -94,24 +95,15 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if req.Who != "pb" && req.Who != "all" {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
 	en := json.NewEncoder(w)
 	if err := req.Update(tmStart.Time, tmFinish.Time); err != nil {
-		fmt.Println(err)
+		sys.GetConfig().Log.Println(err)
 		en.Encode(responseRequest{Success: false})
 	} else {
 		en.Encode(responseRequest{Success: true})
 	}
 }
 
-func HandleFront(w http.ResponseWriter, _ *http.Request) {
-	f, err := os.Open("assets/index.html")
-	if err != nil {
-		log.Println(err)
-	}
-	io.Copy(w, f)
+func HandleFront(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "assets/index.html")
 }

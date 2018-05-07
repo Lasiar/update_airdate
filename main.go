@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
+	"kre_air_update/sys"
 	"kre_air_update/web"
-	"log"
+	"net/http"
 )
 
 func main() {
@@ -12,5 +12,5 @@ func main() {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("assets/js/"))))
 	http.HandleFunc("/update", web.HandleUpdate)
 	http.HandleFunc("/", web.HandleFront)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	sys.GetConfig().Log.Fatal(http.ListenAndServe(":8080", nil))
 }

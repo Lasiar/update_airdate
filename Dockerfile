@@ -15,5 +15,7 @@ COPY --from=builder /src/kre_air_update/main /app
 ADD config.json /app
 ADD assets /app/assets
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 80
 CMD ["/app/main"]
+
+#save -o
