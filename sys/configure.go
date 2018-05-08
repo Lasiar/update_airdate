@@ -9,9 +9,8 @@ import (
 
 type config struct {
 	ConnStr string `json:"connect_string"`
-	ErrDB   *log.Logger
-	ErrWeb  *log.Logger
-	WarnWeb *log.Logger
+	Err     *log.Logger
+	Warn    *log.Logger
 }
 
 var _config *config
@@ -33,7 +32,6 @@ func (c *config) load() {
 	}
 	dc := json.NewDecoder(confFile)
 	dc.Decode(&c)
-	c.ErrDB = log.New(os.Stderr, "[ERROR] database ", log.Ldate|log.Ltime|log.Lshortfile)
-	c.ErrWeb = log.New(os.Stderr, "[ERROR] web ", log.Ldate|log.Ltime|log.Lshortfile)
-	c.WarnWeb = log.New(os.Stderr, "[WARNING] web ", log.Ldate|log.Ltime)
+	c.Err = log.New(os.Stderr, "[ERROR  ] ", log.Ldate|log.Ltime|log.Lshortfile)
+	c.Warn = log.New(os.Stderr, "[WARNING ] ", log.Ldate|log.Ltime)
 }
