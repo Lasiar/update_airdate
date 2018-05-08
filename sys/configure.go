@@ -32,6 +32,6 @@ func (c *config) load() {
 	}
 	dc := json.NewDecoder(confFile)
 	dc.Decode(&c)
-	c.Err = log.New(os.Stderr, "[ERROR  ] ", log.Ldate|log.Ltime|log.Lshortfile)
-	c.Warn = log.New(os.Stderr, "[WARNING ] ", log.Ldate|log.Ltime)
+	c.Err = log.New(os.Stderr, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
+	c.Warn = log.New(os.Stderr, "[WARNING] ", log.Ldate|log.Ltime)
 }

@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-type error interface {
-	Error() string
-}
-
 const (
 	startRow = 1
 	midleRow = 16
 	endRow   = 18
 )
+
+type error interface {
+	Error() string
+}
 
 type request struct {
 	Who        string `json:"who"`
@@ -38,13 +38,13 @@ func (u request) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
-type MyStr string
+type str string
 
-func (u MyStr) String() string {
+func (u str) String() string {
 	return fmt.Sprint(u)
 }
 
-func (u MyStr) Error() string {
+func (u str) Error() string {
 	return fmt.Sprint("%v", u)
 }
 
@@ -66,7 +66,7 @@ type responseRequest struct {
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		printErr(r, MyStr("wrong method"), MyStr(""))
+		printErr(r, str("wrong method"), str(""))
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -74,18 +74,18 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	dc := json.NewDecoder(r.Body)
 	err := dc.Decode(&req)
 	if err != nil {
-		printErr(r, err, MyStr("decode json"))
+		printErr(r, err, str("decode json"))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if len(req.DateFinish)+len(req.DateStart) < 2 {
-		printErr(r, MyStr("wrong len date"), req)
+		printErr(r, str("wrong len date"), req)
 		sys.GetConfig().Warn.Println("wrong len time")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if req.Who != "pb" && req.Who != "all" {
-		printErr(r, MyStr("wrong method"), req)
+		printErr(r, str("wrong method"), req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -108,7 +108,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 		if tmStart.Time != tmFinish.Time {
 			if tmStart.After(tmFinish.Time) {
-				printErr(r, MyStr("wrong date"), req)
+				printErr(r, str("wrong date"), req)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
