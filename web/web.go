@@ -15,13 +15,11 @@ const (
 	endRow   = 18
 )
 
-
 type request struct {
 	Who        string `json:"who"`
 	DateStart  string `json:"date_start"`
 	DateFinish string `json:"date_finish"`
 }
-
 
 func (u request) Update(start, finish time.Time) error {
 	if u.Who == "pb" {

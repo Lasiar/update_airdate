@@ -32,7 +32,15 @@ func (c *config) load() {
 		log.Fatal(err)
 	}
 	dc := json.NewDecoder(confFile)
-	dc.Decode(&c)
+
+	if err := dc.Decode(&c); err != nil {
+		log.Fatal("Read config file: ", err)
+	}
+
+	if c.DB == "" || c.ConnStr == "" {
+		log.Fatal("Config file corrupted: ", c.ConnStr, c.DB)
+	}
+
 	c.Err = log.New(os.Stderr, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
 	c.Warn = log.New(os.Stderr, "[WARNING] ", log.Ldate|log.Ltime)
 }
