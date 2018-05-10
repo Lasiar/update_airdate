@@ -92,7 +92,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.DateFinish == "" {
+	if req.DateFinish == "" || req.DateFinish == req.DateStart {
 		tmFinish = tmStart
 	} else {
 		if err := tmFinish.Parse(req.DateFinish); err != nil {
@@ -100,7 +100,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		if tmStart.Time != tmFinish.Time && tmStart.After(tmFinish.Time) {
+		if tmStart.After(tmFinish.Time) {
 			printErr(r, myStr("wrong date"), req)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
