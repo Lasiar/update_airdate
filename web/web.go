@@ -45,7 +45,7 @@ func (u str) String() string {
 }
 
 func (u str) Error() string {
-	return fmt.Sprint("%v", u)
+	return fmt.Sprintf("%s", string(u))
 }
 
 type date struct {

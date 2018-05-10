@@ -12,7 +12,9 @@ type database struct {
 	*sql.DB
 }
 
-const update = "UPDATE ke_bak.dbo.Lab_AirPub set DateStart = ?, DateEnd = ?	 WHERE ID = ?"
+func getUpdateSQL() string {
+	return "UPDATE " + sys.GetConfig().DB + ".dbo.Lab_AirPub set DateStart = ?, DateEnd = ? WHERE ID = ?"
+}
 
 func (d *database) connect() (err error) {
 	d.DB, err = sql.Open("mssql", sys.GetConfig().ConnStr)
@@ -23,6 +25,8 @@ func (d *database) connect() (err error) {
 }
 
 func Update(dateStart, dateFinish time.Time, begin, end int) error {
+	update := getUpdateSQL()
+	fmt.Println(update)
 	db := new(database)
 	err := db.connect()
 	defer db.Close()

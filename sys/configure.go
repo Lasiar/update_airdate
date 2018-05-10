@@ -9,6 +9,7 @@ import (
 
 type config struct {
 	ConnStr string `json:"connect_string"`
+	DB      string `json:"db"`
 	Err     *log.Logger
 	Warn    *log.Logger
 }
