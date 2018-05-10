@@ -27,10 +27,10 @@ func getUpdateSQL() string {
 func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	update := getUpdateSQL()
 	db := new(database)
-	err := db.connect()
+
 	defer db.Close()
 
-	if err != nil {
+	if err := db.connect(); err != nil {
 		return fmt.Errorf("db.connect: %v", err)
 	}
 
@@ -38,6 +38,7 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	if err != nil {
 		return fmt.Errorf("db.Prepare: %v", err)
 	}
+
 	defer stmt.Close()
 
 	for i := begin; i < end; i++ {
