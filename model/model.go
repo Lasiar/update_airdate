@@ -12,16 +12,16 @@ type database struct {
 	*sql.DB
 }
 
-func getUpdateSQL() string {
-	return "UPDATE " + sys.GetConfig().DB + ".dbo.Lab_AirPub set DateStart = ?, DateEnd = ? WHERE ID = ?"
-}
-
 func (d *database) connect() (err error) {
 	d.DB, err = sql.Open("mssql", sys.GetConfig().ConnStr)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func getUpdateSQL() string {
+	return "UPDATE " + sys.GetConfig().DB + ".dbo.Lab_AirPub set DateStart = ?, DateEnd = ? WHERE ID = ?"
 }
 
 func Update(dateStart, dateFinish time.Time, begin, end int) error {
