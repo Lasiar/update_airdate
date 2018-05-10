@@ -15,15 +15,13 @@ const (
 	endRow   = 18
 )
 
-type error interface {
-	Error() string
-}
 
 type request struct {
 	Who        string `json:"who"`
 	DateStart  string `json:"date_start"`
 	DateFinish string `json:"date_finish"`
 }
+
 
 func (u request) Update(start, finish time.Time) error {
 	if u.Who == "pb" {
@@ -38,13 +36,13 @@ func (u request) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
-type str string
+type myStr string
 
-func (u str) String() string {
-	return fmt.Sprint(u)
+func (u myStr) String() string {
+	return string(u)
 }
 
-func (u str) Error() string {
+func (u myStr) Error() string {
 	return fmt.Sprintf("%s", string(u))
 }
 
@@ -66,7 +64,7 @@ type responseRequest struct {
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		printErr(r, str("wrong method"), str(""))
+		printErr(r, myStr("wrong method"), myStr(""))
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
@@ -74,18 +72,17 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	dc := json.NewDecoder(r.Body)
 	err := dc.Decode(&req)
 	if err != nil {
-		printErr(r, err, str("decode json"))
+		printErr(r, err, myStr("decode json"))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if len(req.DateFinish)+len(req.DateStart) < 2 {
-		printErr(r, str("wrong len date"), req)
-		sys.GetConfig().Warn.Println("wrong len time")
+		printErr(r, myStr("wrong len date"), req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if req.Who != "pb" && req.Who != "all" {
-		printErr(r, str("wrong method"), req)
+		printErr(r, myStr("wrong method"), req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -108,7 +105,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		}
 		if tmStart.Time != tmFinish.Time {
 			if tmStart.After(tmFinish.Time) {
-				printErr(r, str("wrong date"), req)
+				printErr(r, myStr("wrong date"), req)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
@@ -116,12 +113,13 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	en := json.NewEncoder(w)
+
 	if err := req.Update(tmStart.Time, tmFinish.Time); err != nil {
 		en.Encode(responseRequest{Success: false})
 		sys.GetConfig().Err.Println(err)
-	} else {
-		en.Encode(responseRequest{Success: true})
+		return
 	}
+	en.Encode(responseRequest{Success: true})
 }
 
 func HandleFront(w http.ResponseWriter, r *http.Request) {
