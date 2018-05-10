@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+const update = "UPDATE dbo.Lab_AirPub set DateStart = ?, DateEnd = ? WHERE ID = ?"
+
 type database struct {
 	*sql.DB
 }
@@ -20,12 +22,7 @@ func (d *database) connect() (err error) {
 	return nil
 }
 
-func getUpdateSQL() string {
-	return "UPDATE " + sys.GetConfig().DB + ".dbo.Lab_AirPub set DateStart = ?, DateEnd = ? WHERE ID = ?"
-}
-
 func Update(dateStart, dateFinish time.Time, begin, end int) error {
-	update := getUpdateSQL()
 	db := new(database)
 
 	if err := db.connect(); err != nil {

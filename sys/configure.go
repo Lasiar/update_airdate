@@ -9,7 +9,6 @@ import (
 
 type config struct {
 	ConnStr string `json:"connect_string"`
-	DB      string `json:"db"`
 	Err     *log.Logger
 	Warn    *log.Logger
 	Port    string
@@ -38,8 +37,8 @@ func (c *config) load() {
 		log.Fatal("Read config file: ", err)
 	}
 
-	if c.DB == "" || c.ConnStr == "" {
-		log.Fatal("Config file corrupted: ", c.ConnStr, c.DB)
+	if c.ConnStr == "" {
+		log.Fatal("Can`t read connection string: ", c.ConnStr)
 	}
 
 	c.Err = log.New(os.Stderr, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
