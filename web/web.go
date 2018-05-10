@@ -68,8 +68,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 	var req request
 	dc := json.NewDecoder(r.Body)
-	err := dc.Decode(&req)
-	if err != nil {
+	if err := dc.Decode(&req); err != nil {
 		printErr(r, err, myStr("decode json"))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -101,12 +100,10 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		if tmStart.Time != tmFinish.Time {
-			if tmStart.After(tmFinish.Time) {
-				printErr(r, myStr("wrong date"), req)
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
+		if tmStart.Time != tmFinish.Time && tmStart.After(tmFinish.Time) {
+			printErr(r, myStr("wrong date"), req)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	}
 

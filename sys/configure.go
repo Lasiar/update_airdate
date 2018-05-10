@@ -12,6 +12,7 @@ type config struct {
 	DB      string `json:"db"`
 	Err     *log.Logger
 	Warn    *log.Logger
+	Port    string
 }
 
 var _config *config
@@ -31,8 +32,8 @@ func (c *config) load() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	dc := json.NewDecoder(confFile)
 
+	dc := json.NewDecoder(confFile)
 	if err := dc.Decode(&c); err != nil {
 		log.Fatal("Read config file: ", err)
 	}
@@ -43,4 +44,5 @@ func (c *config) load() {
 
 	c.Err = log.New(os.Stderr, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
 	c.Warn = log.New(os.Stderr, "[WARNING] ", log.Ldate|log.Ltime)
+	c.Port = ":8080"
 }
