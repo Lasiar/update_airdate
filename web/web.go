@@ -62,24 +62,24 @@ type responseRequest struct {
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		printErr(r, myStr("wrong method"), myStr(r.Method))
+		printErr(r.RemoteAddr, myStr("wrong method"), myStr(r.Method))
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	var req request
 	dc := json.NewDecoder(r.Body)
 	if err := dc.Decode(&req); err != nil {
-		printErr(r, err, myStr("decode json"))
+		printErr(r.RemoteAddr, err, myStr("decode json"))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if len(req.DateFinish)+len(req.DateStart) < 2 {
-		printErr(r, myStr("wrong len date"), req)
+		printErr(r.RemoteAddr, myStr("wrong len date"), req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	if req.Who != "pb" && req.Who != "all" {
-		printErr(r, myStr("wrong method"), req)
+		printErr(r.RemoteAddr, myStr("wrong method"), req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -87,7 +87,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	var tmStart, tmFinish date
 
 	if err := tmStart.Parse(req.DateStart); err != nil {
-		printErr(r, err, req)
+		printErr(r.RemoteAddr, err, req)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -96,12 +96,12 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		tmFinish = tmStart
 	} else {
 		if err := tmFinish.Parse(req.DateFinish); err != nil {
-			printErr(r, err, req)
+			printErr(r.RemoteAddr, err, req)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		if tmStart.After(tmFinish.Time) {
-			printErr(r, myStr("wrong date"), req)
+			printErr(r.RemoteAddr, myStr("wrong date"), req)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -121,6 +121,6 @@ func HandleFront(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "assets/index.html")
 }
 
-func printErr(r *http.Request, err error, req fmt.Stringer) {
-	sys.GetConfig().Warn.Printf("FROM %v %v;  DATA: %v", r.RemoteAddr, err, req)
+func printErr(ipAddr string, err error, req fmt.Stringer) {
+	sys.GetConfig().Warn.Printf("FROM %v %v;  DATA: %v", ipAddr, err, req)
 }
