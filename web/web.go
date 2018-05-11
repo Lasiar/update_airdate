@@ -62,7 +62,7 @@ type responseRequest struct {
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		printErr(r, myStr("wrong method"), myStr(""))
+		printErr(r, myStr("wrong method"), myStr(r.Method))
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
