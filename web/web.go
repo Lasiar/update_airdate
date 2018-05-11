@@ -70,17 +70,17 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	dc := json.NewDecoder(r.Body)
 	if err := dc.Decode(&req); err != nil {
 		printErr(r.RemoteAddr, err, myStr("decode json"))
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.Status)
 		return
 	}
 	if len(req.DateFinish)+len(req.DateStart) < 2 {
 		printErr(r.RemoteAddr, myStr("wrong len date"), req)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if req.Who != "pb" && req.Who != "all" {
 		printErr(r.RemoteAddr, myStr("wrong method"), req)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -88,7 +88,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	if err := tmStart.Parse(req.DateStart); err != nil {
 		printErr(r.RemoteAddr, err, req)
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -97,12 +97,12 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if err := tmFinish.Parse(req.DateFinish); err != nil {
 			printErr(r.RemoteAddr, err, req)
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		if tmStart.After(tmFinish.Time) {
 			printErr(r.RemoteAddr, myStr("wrong date"), req)
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 	}
