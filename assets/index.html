@@ -6,40 +6,29 @@
 </head>
 <body>
 
-
-<div id="one">
-    <dev v-if="loading">Грузится</dev>
-
-    <form>
-        <p>
-            Свинец <br>
-        {{answer}}
-            <input type="date" class="input-date-first" v-model="date_one_start" required title="начало">
-            <input type="date" class="input-date-second" v-model="date_one_finish" required placeholder="конец"
-                   title="конец">
-            <input type="submit" class="input-submit" v-on:click.prevent="sendPB" v-bind:disabled="!checkData">
-        </p>
-    </form>
+<div id="app">
+    <date-form who="pb">Свинец</date-form>
+    <date-form who="all">Все</date-form>
 </div>
 
-<div id="two">
-    <dev v-if="loading">Грузится</dev>
 
-    <form>
-        <p>
-            Все <br>
-        {{answer}}
-            <input type="date" class="input-date-first" v-model="date_one_start" required title="начало">
-            <input type="date" class="input-date-second" v-model="date_one_finish" required placeholder="конец"
-                   title="конец">
-            <input type="submit" class="input-submit" v-on:click.prevent="sendAll" v-bind:disabled="!checkData">
-        </p>
-    </form>
+<template id="date-form-template">
+    <div>
+        <form>
+            <p>
+                <slot></slot>
+                <br>
+                <input type="date" class="input-date-first" v-model="date_one_start" required title="начало">
+                <input type="date" class="input-date-second" v-model="date_one_finish" required placeholder="конец"
+                       title="конец">
+                <input type="submit" class="input-submit" v-on:click.prevent="update" v-bind:disabled="!checkData">
+            </p>
+        </form>
+    </div>
+</template>
 
-</div>
-
-<script type="text/javascript" src="js/vue.min.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
 <script type="text/javascript" src="js/axios.min.js"></script>
-<script type="text/javascript" src="js/main.js"> </script>
+<script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>
