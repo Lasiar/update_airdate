@@ -7,12 +7,44 @@
 <body>
 
 <div id="app">
-    <date-form who="pb">Свинец</date-form>
-    <date-form who="all">Все</date-form>
+    <date-form @response="modal" who="pb">Свинец</date-form>
+    <date-form @response="modal" who="all">Все</date-form>
+
+    <modal v-bind:succes="succes" v-bind:info="info" v-if="showModal" @close="showModal = false">
+        <
+
 </div>
 
 
-<template id="date-form-template">
+<script type="text/x-template" id="modal-template">
+    <transition name="modal">
+        <div class="modal-mask">
+            <div class="modal-wrapper">
+                <div class="modal-container">
+                    <div v-bind:class="[refresh ? 'modal-header-false' : '', 'modal-header']">
+                        <slot name="header">
+                            default header
+                        </slot>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><a href="http://krasecology.ru">Проверить</a></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <slot name="fotter">
+                            Нажмите "ОК" или "проверить"
+                            <button class="modal-default-button" autofocus @click="$emit('close')">OK</button>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
+</script>
+
+
+<script type="text/x-template" id="date-form-template">
     <div>
         <form>
             <p>
@@ -25,8 +57,9 @@
             </p>
         </form>
     </div>
-</template>
+</script>
 
+<link rel="stylesheet" href="css/main.css">
 <script type="text/javascript" src="js/vue.js"></script>
 <script type="text/javascript" src="js/axios.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
