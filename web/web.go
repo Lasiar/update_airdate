@@ -114,6 +114,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		sys.GetConfig().Err.Println(err)
 		return
 	}
+	sys.GetConfig().Info.Printf("update DB [FROM] %v [DATA] %v", r.RemoteAddr, req)
 	en.Encode(responseRequest{Success: true})
 }
 
@@ -122,5 +123,5 @@ func HandleFront(w http.ResponseWriter, r *http.Request) {
 }
 
 func printErr(ipAddr string, err error, req fmt.Stringer) {
-	sys.GetConfig().Warn.Printf("FROM %v %v;  DATA: %v", ipAddr, err, req)
+	sys.GetConfig().Warn.Printf("%v [FROM] %v [DATA] %v", err, ipAddr, req)
 }

@@ -26,14 +26,14 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	db := new(database)
 
 	if err := db.connect(); err != nil {
-		return fmt.Errorf("db.connect: %v", err)
+		return fmt.Errorf("[db.connect] %v", err)
 	}
 
 	defer db.Close()
 
 	stmt, err := db.Prepare(update)
 	if err != nil {
-		return fmt.Errorf("db.Prepare: %v", err)
+		return fmt.Errorf("[db.Prepare] %v", err)
 	}
 
 	defer stmt.Close()
@@ -41,7 +41,7 @@ func Update(dateStart, dateFinish time.Time, begin, end int) error {
 	for i := begin; i < end; i++ {
 		_, err = stmt.Exec(dateStart, dateFinish, i)
 		if err != nil {
-			return fmt.Errorf("db.Exec: %v", err)
+			return fmt.Errorf("[db.Exec] %v", err)
 		}
 	}
 	return nil
