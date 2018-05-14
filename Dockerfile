@@ -12,7 +12,7 @@ RUN  GOPATH=/ GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main
 FROM amd64/alpine
 RUN mkdir /app
 COPY --from=builder /src/kre_air_update/main /app
-ADD config.json /app
+ADD prod.config.json /app/config.json
 ADD assets /app/assets
 WORKDIR /app
 EXPOSE 80
