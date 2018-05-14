@@ -70,7 +70,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	dc := json.NewDecoder(r.Body)
 	if err := dc.Decode(&req); err != nil {
 		printErr(r.RemoteAddr, err, myStr("decode json"))
-		w.WriteHeader(http.Status)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if len(req.DateFinish)+len(req.DateStart) < 2 {
