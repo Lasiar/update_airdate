@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Обновление таблиц воздуха</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -10,8 +11,8 @@
     <date-form @response="modal" who="pb">Свинец</date-form>
     <date-form @response="modal" who="all">Все</date-form>
 
-    <modal v-bind:succes="succes" v-bind:info="info" v-if="showModal" @close="showModal = false">
-        <
+    <modal succes="succes" v-if="showModal" @close="showModal = false"> {{info}} </modal>
+
 
 </div>
 
@@ -21,10 +22,10 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
-                    <div v-bind:class="[refresh ? 'modal-header-false' : '', 'modal-header']">
-                        <slot name="header">
-                            default header
-                        </slot>
+                    <div v-bind:class="[succes ? 'modal-header-false' : 'modal-header' ]">
+                        <h3>
+                            <slot></slot>
+                        </h3>
                     </div>
 
                     <div class="modal-body">
@@ -32,10 +33,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <slot name="fotter">
-                            Нажмите "ОК" или "проверить"
-                            <button class="modal-default-button" autofocus @click="$emit('close')">OK</button>
-                        </slot>
+                        Нажмите "ОК" или "проверить"
+                        <button class="modal-default-button" autofocus @click="$emit('close')">OK</button>
                     </div>
                 </div>
             </div>
@@ -58,8 +57,6 @@
         </form>
     </div>
 </script>
-
-<link rel="stylesheet" href="css/main.css">
 <script type="text/javascript" src="js/vue.js"></script>
 <script type="text/javascript" src="js/axios.min.js"></script>
 <script type="text/javascript" src="js/main.js"></script>

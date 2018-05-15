@@ -58,7 +58,6 @@ Vue.component('date-form', {
     },
 });
 
-window.Event = new Vue();
 
 new Vue({
     el: "#app",
