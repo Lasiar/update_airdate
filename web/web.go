@@ -21,6 +21,13 @@ type request struct {
 	DateFinish string `json:"date_finish"`
 }
 
+const (
+	startDateAll   = iota
+	finishDateAll
+	startDatePb
+	finishDatePb
+)
+
 func (u request) Update(start, finish time.Time) error {
 	if u.Who == "pb" {
 		return model.Update(start, finish, midleRow, endRow)
@@ -58,6 +65,26 @@ func (d *date) Parse(str string) (err error) {
 
 type responseRequest struct {
 	Success bool `json:"success"`
+}
+
+func HandleGetDate(w http.ResponseWriter, r *http.Request) {
+
+
+	if r.Method != http.MethodPost {
+		printErr(r.RemoteAddr, myStr("wrong method"), myStr(r.Method))
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	dt, err := model.Select()
+	if err != nil {
+		printErr(r.RemoteAddr, err, nil)
+	}
+	fmt.Println(dt)
+	req := new([2]request)
+	req[0] = request{"all", dt[startDateAll], dt[finishDateAll]}
+	req[1] = request{"pb", dt[startDatePb], dt[finishDatePb]}
+	dec := json.NewEncoder(w)
+	dec.Encode(req)
 }
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
